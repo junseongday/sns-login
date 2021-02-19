@@ -17,19 +17,19 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
-@RequestMapping(method = RequestMethod.GET)
+// @RequestMapping(method = RequestMethod.GET)
 public class AccountController {
-    final String client_id = "client_id";
-    final String client_secret = "client_secret";
-    final String redirect_uri = "redirect_uri";
+    final String client_id = "s72rijY0ayx5n6pRVxB_";
+    final String client_secret = "G4HXqqS7dz";
+    final String redirect_uri = "http://localhost:8080/res";
 
     @RequestMapping(value = "/callNaverLogin")
     public ResponseEntity<?> test1(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -56,13 +56,13 @@ public class AccountController {
     }
 
     @RequestMapping(value = "/res")
-    public void res(HttpServletRequest request, HttpServletResponse response, String code, String state)
+    public void res(HttpServletRequest request, HttpServletResponse response, @ModelAttribute NaverVO vo)
             throws IOException {
         HttpSession session = request.getSession();
         System.out.println(session.getAttribute("state"));
 
         String url = "https://nid.naver.com/oauth2.0/token?client_id=" + client_id + "&client_secret=" + client_secret
-                + "&grant_type=authorization_code&state=" + state + "&code=" + code;
+                + "&grant_type=authorization_code&state=" + vo.getState() + "&code=" + vo.getCode();
         HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
         factory.setConnectTimeout(5000); // 타임아웃 설정 5초
         factory.setReadTimeout(5000);// 타임아웃 설정 5초
