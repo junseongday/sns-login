@@ -48,10 +48,9 @@ public class AccountController {
 
         String url = "https://nid.naver.com/oauth2.0/authorize?client_id=" + client_id
                 + "&response_type=code&redirect_uri=" + redirectUri + "&state=" + state;
-        System.out.println(url);
 
         HashMap<String, Object> data = new HashMap<>();
-        data.put("data", url);
+        data.put("url", url);
 
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
@@ -77,14 +76,15 @@ public class AccountController {
 
         Map<String, Object> resStr = rst.getBody();
         // Entries obj = mapper.readValue(resStr, Entries.class);
-        String profile = getProfile(resStr);
+        Map<String, Object> profile = getProfile(resStr);
         System.out.println(resStr.get("access_token"));
         session.setAttribute("token", resStr);
+        session.setAttribute("profile", profile);
 
-        response.sendRedirect("http://localhost:8082?profile=" + profile);
+        response.sendRedirect("http://localhost:8082");
     }
 
-    public String getProfile(Map<String, Object> res) {
+    public HashMap getProfile(Map<String, Object> res) {
         HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
         factory.setConnectTimeout(5000); // 타임아웃 설정 5초
         factory.setReadTimeout(5000);// 타임아웃 설정 5초
@@ -95,8 +95,18 @@ public class AccountController {
         String url = "https://openapi.naver.com/v1/nid/me";
         UriComponents uri = UriComponentsBuilder.fromHttpUrl(url).build();
         ResponseEntity<HashMap> rst = restTemplate.exchange(uri.toString(), HttpMethod.GET, entity, HashMap.class);
-        System.out.println(rst.getBody().get("response"));
-        return rst.getBody().toString();
+        System.out.println(rst.getBody().get("response").getClass().getName() + "::::" + rst.getBody().get("response"));
+        return (HashMap) rst.getBody().get("response");
+    }
+
+    @RequestMapping(value = "/getUserInfo")
+    public ResponseEntity<?> getUserInfo(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession();
+
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("profile", session.getAttribute("profile"));
+
+        return new ResponseEntity<>(data, HttpStatus.OK);
     }
 
     public String generateState() {
