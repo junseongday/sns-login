@@ -29,6 +29,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class AccountController {
     final String client_id = "client_id";
     final String client_secret = "client_secret";
+    final String redirect_uri = "redirect_uri";
 
     @RequestMapping(value = "/callNaverLogin")
     public ResponseEntity<?> test1(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -43,10 +44,10 @@ public class AccountController {
          * code&redirect_uri={개발자 센터에 등록한 콜백 URL(URL 인코딩)}&state={상태 토큰}
          */
 
-        String redirect_uri = URLEncoder.encode("http://localhost:8080/res", "UTF-8");
+        String redirectUri = URLEncoder.encode(redirect_uri, "UTF-8");
 
         String url = "https://nid.naver.com/oauth2.0/authorize?client_id=" + client_id
-                + "&response_type=code&redirect_uri=" + redirect_uri + "&state=" + state;
+                + "&response_type=code&redirect_uri=" + redirectUri + "&state=" + state;
         System.out.println(url);
 
         HashMap<String, Object> data = new HashMap<>();
