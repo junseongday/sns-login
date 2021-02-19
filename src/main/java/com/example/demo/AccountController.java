@@ -27,8 +27,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RestController
 // @RequestMapping(method = RequestMethod.GET)
 public class AccountController {
-    final String client_id = "s72rijY0ayx5n6pRVxB_";
-    final String client_secret = "G4HXqqS7dz";
+    final String client_id = "client_id";
+    final String client_secret = "client_secret";
     final String redirect_uri = "http://localhost:8080/res";
 
     @RequestMapping(value = "/callNaverLogin")
